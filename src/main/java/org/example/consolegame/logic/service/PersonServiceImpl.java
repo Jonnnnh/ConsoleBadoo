@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PersonServiceImpl implements PersonService {
-    private List<Person> personList = new ArrayList<>();
+    private final List<Person> personList = new ArrayList<>();
     private final PersonFactory personFactory;
     private RecommendationStrategy recommendationStrategy;
 
@@ -18,19 +18,28 @@ public class PersonServiceImpl implements PersonService {
         this.recommendationStrategy = recommendationStrategy;
     }
 
-
-    @Override
-    public Person createPerson(String firstName, String lastName, Integer age, Gender gender, String[] interests) {
-        Person newPerson = personFactory.createPerson(firstName, lastName, age, gender, interests);
-        personList.add(newPerson);
-        return newPerson;
-    }
-
     @Override
     public List<Person> getRecommendations(Person person) {
         return recommendationStrategy.filter(personList, person);
     }
 
+    @Override
+    public void setRecommendations(RecommendationStrategy recommendationStrategy) {
+        this.recommendationStrategy = recommendationStrategy;
+    }
+
+    @Override
+    public Person createPerson(String firstName, String lastName, Integer age, Gender gender,
+                               String location, String education, String profession, List<String> interests) {
+        Person newPerson = personFactory.createPerson(firstName, lastName, age, gender,
+                location, education, profession, interests);
+        personList.add(newPerson);
+        return newPerson;
+    }
+    @Override
+    public List<Person> getAllPeople() {
+        return new ArrayList<>(personList);
+    }
     @Override
     public String connectPeople(Person person1, Person person2) {
         if (person1.equals(person2)) {
@@ -40,5 +49,5 @@ public class PersonServiceImpl implements PersonService {
             return "Однополые соединения не поддерживаются";
         }
         return "Есть коннект! Между " + person1.getFirstName() + " и " + person2.getFirstName() + "!";
-    }
+    } // TODO: добавить в случай, если никто не подошел
 }

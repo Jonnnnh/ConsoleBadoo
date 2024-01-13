@@ -1,17 +1,21 @@
 package org.example.consolegame.view;
 
 import org.example.consolegame.client.Person;
-import org.example.consolegame.logic.Manager;
+import org.example.consolegame.logic.manager.ConnectionManager;
+import org.example.consolegame.logic.manager.Manager;
 
+import java.util.List;
 import java.util.Scanner;
 
 public class ConsoleUI {
     private final Scanner scanner;
     private final Manager manager;
+    private final ConnectionManager connectionManager;
 
-    public ConsoleUI(Manager manager) {
+    public ConsoleUI(Manager manager, ConnectionManager connectionManager) {
         this.scanner = new Scanner(System.in);
         this.manager = manager;
+        this.connectionManager = connectionManager;
     }
 
     public void start() {
@@ -30,25 +34,28 @@ public class ConsoleUI {
                 System.out.println(me.getProfileCard());
                 break;
             case 2:
-                System.out.println("Введи информацию о себе:");
-                manager.inputPersonData();
+                me = manager.inputPersonData();
                 break;
             case 3:
-                for (Person person : manager.getRecommendations(me)) {
+                manager.selectRecommendation(me);
+                List<Person> recommendations = manager.getRecommendations(me);
+                for (Person person : recommendations) {
                     System.out.println(person.getProfileCard());
                 }
                 break;
             case 4:
-                manager.connectMeWithSomebody(scanner, me);
+                connectionManager.connectMeWithSomebody(scanner, me);
                 break;
             case 5:
                 manager.addPerson(manager.inputPersonData());
                 break;
             case 0:
                 System.out.println("Выход из программы...");
-                return;
+                System.exit(0);
+                break;
             default:
                 System.out.println("Нет такой команды, попробуйте еще раз");
+                break;
         }
     }
 }

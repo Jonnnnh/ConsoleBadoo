@@ -1,6 +1,7 @@
 package org.example.consolegame.client;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 public class Person {
@@ -9,46 +10,45 @@ public class Person {
     private final String lastName;
     private final Integer age;
     private final Gender gender;
-    private String[] interests;
+    private String location;
+    private String education;
+    private String profession;
+    private List<String> interests;
 
-    public Person(int id, String firstName, String lastName, Integer age, Gender gender) {
+    public Person(int id, String firstName, String lastName, Integer age, Gender gender, String location, String education, String profession, List<String> interests) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.age = age;
         this.gender = gender;
-    }
-
-    public Person(int id, String firstName, String lastName, Integer age, Gender gender, String[] interests) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.age = age;
-        this.gender = gender;
+        this.location = location;
+        this.education = education;
+        this.profession = profession;
         this.interests = interests;
     }
 
     public String getProfileCard() {
-        String profile = firstName + " " + lastName + ", " + age + ", " + gender + ", id = " + id;
+        System.out.print("\n");
+        String ansiGreen = "\u001B[32m";
+        String ansiReset = "\u001B[0m";
 
-        if (interests != null && interests.length > 0) {
-            profile += ", Интересы: " + Arrays.toString(interests);
+        StringBuilder profile = new StringBuilder(ansiGreen);
+        profile.append(firstName).append(" ").append(lastName).append(", ").append(age).append(", ").append(gender).append(", id = ").append(id);
+
+        if (location != null && !location.isEmpty()) {
+            profile.append(", Местоположение: ").append(location);
         }
-
-        return profile;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == this) return true;
-        if (obj == null || obj.getClass() != getClass()) return false;
-
-        Person person = (Person) obj;
-        return Objects.equals(firstName, person.firstName) &&
-                Objects.equals(lastName, person.lastName) &&
-                Objects.equals(age, person.age) &&
-                Objects.equals(gender, person.gender) &&
-                Arrays.equals(interests, person.interests);
+        if (education != null && !education.isEmpty()) {
+            profile.append(", Образование: ").append(education);
+        }
+        if (profession != null && !profession.isEmpty()) {
+            profile.append(", Профессия: ").append(profession);
+        }
+        if (interests != null && !interests.isEmpty()) {
+            profile.append(", Интересы: ").append(interests);
+        }
+        profile.append(ansiReset);
+        return profile.toString();
     }
 
     public int getId() {
@@ -71,23 +71,31 @@ public class Person {
         return gender;
     }
 
-    public void setInterests(String[] interests) {
-        this.interests = interests;
+    public String getLocation() {
+        return location;
     }
 
-    public String[] getInterests() {
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public String getEducation() {
+        return education;
+    }
+
+    public void setEducation(String education) {
+        this.education = education;
+    }
+
+    public String getProfession() {
+        return profession;
+    }
+
+    public void setProfession(String profession) {
+        this.profession = profession;
+    }
+
+    public List<String> getInterests() {
         return interests;
-    }
-
-    @Override
-    public String toString() {
-        return "Person{" +
-                "id=" + id +
-                ", firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", age=" + age +
-                ", gender=" + gender +
-                ", interests=" + Arrays.toString(interests) +
-                '}';
     }
 }

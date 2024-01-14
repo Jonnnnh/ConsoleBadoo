@@ -20,6 +20,7 @@ public class InterestBasedRecommendationStrategy implements RecommendationStrate
     public List<Person> filter(List<Person> people, Person me) {
         return people.stream()
                 .filter(person -> InputNormalizer.hasMatchingInterests(person, this.interests))
+                .filter(person -> !person.equals(me))
                 .collect(Collectors.toList());
     }
 }

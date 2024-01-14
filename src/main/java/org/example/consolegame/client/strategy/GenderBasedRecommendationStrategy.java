@@ -11,6 +11,7 @@ public class GenderBasedRecommendationStrategy implements RecommendationStrategy
     public List<Person> filter(List<Person> people, Person me) {
         return people.stream()
                 .filter(person -> person.getGender() != me.getGender())
+                .filter(person -> !person.equals(me))
                 .collect(Collectors.toList());
     }
 }

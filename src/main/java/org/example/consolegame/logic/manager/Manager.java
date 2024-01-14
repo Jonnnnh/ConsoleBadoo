@@ -6,30 +6,28 @@ import org.example.consolegame.client.factory.PersonFactory;
 import org.example.consolegame.client.strategy.*;
 import org.example.consolegame.helpers.ConsoleColors;
 import org.example.consolegame.helpers.InputNormalizer;
-import org.example.consolegame.logic.service.PersonService;
+import org.example.consolegame.logic.facade.PersonManagementFacade;
+import org.example.consolegame.logic.service.IPersonCreationService;
 
 import java.util.*;
 
-public class Manager implements PersonManager {
-    private final PersonService personService;
-    private final PersonFactory personFactory;
-    private final List<Person> personList = new ArrayList<>();
+public class Manager implements IPersonManager {
+    private final PersonManagementFacade facade;
 
-    public Manager(PersonService personService, PersonFactory personFactory) {
-        this.personService = personService;
-        this.personFactory = personFactory;
+    public Manager(PersonManagementFacade facade) {
+        this.facade = facade;
     }
 
     @Override
     public List<Person> getRecommendations(Person me) {
-        return personService.getRecommendations(me);
+        return facade.getRecommendations(me);
     }
 
     @Override
     public void addPerson(Person person) {
-        personService.createPerson(person.getFirstName(), person.getLastName(), person.getAge(), person.getGender(), person.getLocation(),
-                person.getEducation(), person.getProfession(), person.getInterests());
-        personList.add(person);
+        Person newPerson = facade.createPerson(person.getFirstName(), person.getLastName(), person.getAge(),
+                person.getGender(), person.getLocation(), person.getEducation(),
+                person.getProfession(), person.getInterests());
     }
 
     @Override
@@ -49,8 +47,8 @@ public class Manager implements PersonManager {
     public Person inputPersonData() {
         Scanner scanner = new Scanner(System.in);
         String name, surname, location, education, profession;
-        int age = 0;
-        Gender gender = null;
+        int age;
+        Gender gender;
 
         System.out.print("Имя: ");
         name = scanner.nextLine();
@@ -58,32 +56,9 @@ public class Manager implements PersonManager {
         System.out.print("Фамилия: ");
         surname = scanner.nextLine();
 
-        boolean validInput = false;
-        while (!validInput) {
-            try {
-                System.out.print("Возраст: ");
-                age = scanner.nextInt();
-                scanner.nextLine();
-                validInput = true;
-            } catch (InputMismatchException e) {
-                System.out.println(ConsoleColors.RED + "Пожалуйста, введите число для возраста" + ConsoleColors.RESET);
-                scanner.nextLine();
-            }
-        }
+        age = getIntFromUser(scanner, "Возраст: ");
+        gender = getGenderFromUser(scanner);
 
-        validInput = false;
-        while (!validInput) {
-            try {
-                System.out.print("Твой гендер (1 - мужчина, 2 - женщина): ");
-                byte genderInput = scanner.nextByte();
-                scanner.nextLine();
-                gender = (genderInput == 1) ? Gender.MAN : Gender.WOMAN;
-                validInput = true;
-            } catch (InputMismatchException e) {
-                System.out.println(ConsoleColors.RED + "Пожалуйста, введите 1 или 2 для выбора гендера" + ConsoleColors.RESET);
-                scanner.nextLine();
-            }
-        }
         System.out.print("Местоположение: ");
         location = scanner.nextLine();
 
@@ -93,15 +68,9 @@ public class Manager implements PersonManager {
         System.out.print("Профессия: ");
         profession = scanner.nextLine();
 
-        System.out.println("Хотите ввести интересы? (1 - да, 2 - нет): ");
-        List<String> interests = new ArrayList<>();
-        if (scanner.nextByte() == 1) {
-            scanner.nextLine();
-            System.out.print("Введите интересы через запятую: ");
-            String interestsInput = scanner.nextLine();
-            interests = Arrays.asList(interestsInput.split(","));
-        }
-        return personFactory.createPerson(name, surname, age, gender, location, education, profession, interests);
+        List<String> interests = getInterestsFromUser(scanner);
+
+        return facade.createPerson(name, surname, age, gender, location, education, profession, interests);
     }
 
     @Override
@@ -142,13 +111,50 @@ public class Manager implements PersonManager {
             default:
                 strategy = new GenderBasedRecommendationStrategy();
         }
-        personService.setRecommendations(strategy);
+        facade.setRecommendations(strategy);
 
-        List<Person> recommendations = personService.getRecommendations(me);
+        List<Person> recommendations = facade.getRecommendations(me);
         if (recommendations.isEmpty()) {
             System.out.println(ConsoleColors.RED + "Нет людей, соответствующих выбранным критериям." + ConsoleColors.RESET);
         } else {
             System.out.println(ConsoleColors.GREEN + "Стратегия рекомендаций успешно установлена." + ConsoleColors.RESET);
+        }
+    }
+
+    private int getIntFromUser(Scanner scanner, String prompt) {
+        System.out.print(prompt);
+        while (!scanner.hasNextInt()) {
+            System.out.println(ConsoleColors.RED + "Пожалуйста, введите число" + ConsoleColors.RESET);
+            System.out.print(prompt);
+            scanner.next();
+        }
+        int number = scanner.nextInt();
+        scanner.nextLine();
+        return number;
+    }
+
+    private Gender getGenderFromUser(Scanner scanner) {
+        System.out.print("Твой гендер (1 - мужчина, 2 - женщина): ");
+        while (!scanner.hasNextByte()) {
+            System.out.println(ConsoleColors.RED + "Пожалуйста, введите 1 или 2 для выбора гендера" + ConsoleColors.RESET);
+            System.out.print("Твой гендер (1 - мужчина, 2 - женщина): ");
+            scanner.next();
+        }
+        byte genderInput = scanner.nextByte();
+        scanner.nextLine();
+        return (genderInput == 1) ? Gender.MAN : Gender.WOMAN;
+    }
+
+    private List<String> getInterestsFromUser(Scanner scanner) {
+        System.out.println("Хотите ввести интересы? (1 - да, 2 - нет): ");
+        if (scanner.nextByte() == 1) {
+            scanner.nextLine();
+            System.out.print("Введите интересы через запятую: ");
+            String interestsInput = scanner.nextLine();
+            return Arrays.asList(interestsInput.split(","));
+        } else {
+            scanner.nextLine();
+            return new ArrayList<>();
         }
     }
 }

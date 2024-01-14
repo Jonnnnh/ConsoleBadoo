@@ -16,6 +16,7 @@ public class LocationBasedRecommendationStrategy implements RecommendationStrate
     public List<Person> filter(List<Person> people, Person me) {
         return people.stream()
                 .filter(person -> person.getLocation().equals(location))
+                .filter(person -> !person.equals(me))
                 .collect(Collectors.toList());
     }
 }

@@ -18,6 +18,7 @@ public class AgeBasedRecommendationStrategy implements RecommendationStrategy{
     public List<Person> filter(List<Person> people, Person me) {
         return people.stream()
                 .filter(person -> person.getAge() >= minAge && person.getAge() <= maxAge)
+                .filter(person -> !person.equals(me))
                 .collect(Collectors.toList());
     }
 }

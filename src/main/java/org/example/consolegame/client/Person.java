@@ -1,9 +1,8 @@
 package org.example.consolegame.client;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import org.example.consolegame.helpers.ConsoleColors;
+
+import java.util.*;
 
 public class Person {
     private int id = 0;
@@ -15,7 +14,7 @@ public class Person {
     private String education;
     private String profession;
     private final List<String> interests;
-    private List<Person> friends;
+    private Map<Person, RelationshipType> relationships;
 
     public Person(int id, String firstName, String lastName, Integer age, Gender gender, String location, String education, String profession, List<String> interests) {
         this.id = id;
@@ -27,11 +26,7 @@ public class Person {
         this.education = education;
         this.profession = profession;
         this.interests = interests;
-        this.friends = new ArrayList<>();
-    }
-
-    public List<Person> getFriends() {
-        return friends;
+        this.relationships = new HashMap<>();
     }
 
     public int getId() {
@@ -82,6 +77,15 @@ public class Person {
         return interests;
     }
 
+    public Map<Person, RelationshipType> getRelationships() {
+        return relationships;
+    }
+
+    public void addRelationship(Person person, RelationshipType type) {
+        relationships.put(person, type);
+        person.relationships.put(this, type);
+    }
+
     public String getProfileCard() {
         System.out.print("\n");
         String ansiGreen = "\u001B[32m";
@@ -106,10 +110,15 @@ public class Person {
         return profile.toString();
     }
 
-    public void addFriend(Person friend) {
-        if (!this.friends.contains(friend) && !friend.equals(this)) {
-            this.friends.add(friend);
-            friend.addFriend(this);
+    public void printRelationships() {
+        if (relationships.isEmpty()) {
+            System.out.println(ConsoleColors.RED + "У вас нет установленных связей." + ConsoleColors.RESET);
+        } else {
+            for (Map.Entry<Person, RelationshipType> entry : relationships.entrySet()) {
+                Person otherPerson = entry.getKey();
+                RelationshipType type = entry.getValue();
+                System.out.println(otherPerson.getFirstName() + " " + otherPerson.getLastName() + " - " + type);
+            }
         }
     }
 

@@ -2,12 +2,10 @@ package org.example.consolegame.logic.manager;
 
 import org.example.consolegame.client.Gender;
 import org.example.consolegame.client.Person;
-import org.example.consolegame.client.factory.PersonFactory;
 import org.example.consolegame.client.strategy.*;
 import org.example.consolegame.helpers.ConsoleColors;
 import org.example.consolegame.helpers.InputNormalizer;
 import org.example.consolegame.logic.facade.PersonManagementFacade;
-import org.example.consolegame.logic.service.IPersonCreationService;
 
 import java.util.*;
 
@@ -25,13 +23,11 @@ public class Manager implements IPersonManager {
 
     @Override
     public void addPerson(Person person) {
-        Person newPerson = facade.createPerson(person.getFirstName(), person.getLastName(), person.getAge(),
-                person.getGender(), person.getLocation(), person.getEducation(),
-                person.getProfession(), person.getInterests());
+        facade.addPerson(person);
     }
 
     @Override
-    public void printMenu() {
+    public void printMenu() { // TODO: исключения, программа вылетает
         System.out.print("\n");
         ConsoleColors.printHeader("Главное Меню");
         ConsoleColors.printText("1 - Просмотреть свой профиль");
@@ -39,6 +35,7 @@ public class Manager implements IPersonManager {
         ConsoleColors.printText("3 - Посмотреть рекомендации");
         ConsoleColors.printText("4 - Проверить, подходит ли мне человек");
         ConsoleColors.printText("5 - Добавить человека");
+        ConsoleColors.printText("6 - Посмотреть мои текущие связи");
         ConsoleColors.printText("0 - Выйти");
         System.out.print("\n");
     }

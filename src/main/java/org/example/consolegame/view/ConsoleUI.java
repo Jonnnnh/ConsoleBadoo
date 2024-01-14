@@ -49,6 +49,9 @@ public class ConsoleUI {
             case 5:
                 manager.addPerson(manager.inputPersonData());
                 break;
+            case 6:
+                me.printRelationships();
+                break;
             case 0:
                 System.out.println("Выход из программы...");
                 System.exit(0);

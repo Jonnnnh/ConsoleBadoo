@@ -7,6 +7,8 @@ public class ConsoleColors {
     public static final String BOLD = "\u001B[1m";
     public static final String ITALIC = "\u001B[3m";
     public static final String WHITE= "\u001B[37m";
+    public static final String YELLOW = "\u001B[33m";
+    public static final String MAGENTA = "\u001B[35m";
 
     public static void printHeader(String header) {
         System.out.println(ConsoleColors.BOLD + ConsoleColors.WHITE + header.toUpperCase() + ConsoleColors.RESET);

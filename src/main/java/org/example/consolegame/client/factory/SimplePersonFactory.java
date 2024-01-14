@@ -11,6 +11,7 @@ public class SimplePersonFactory  implements PersonFactory {
     @Override
     public Person createPerson(String firstName, String lastName, Integer age, Gender gender,
                                String location, String education, String profession, List<String> interests) {
+        System.out.println("Creating person with ID: " + currentId);
         return new Person(currentId++, firstName, lastName, age, gender, location, education, profession, interests);
     }
 }

@@ -2,6 +2,7 @@ package org.example.consolegame.logic.facade;
 
 import org.example.consolegame.client.Gender;
 import org.example.consolegame.client.Person;
+import org.example.consolegame.client.RelationshipType;
 import org.example.consolegame.client.strategy.RecommendationStrategy;
 import org.example.consolegame.logic.service.IConnectionServiceImpl;
 import org.example.consolegame.logic.service.IPersonCreationService;
@@ -36,8 +37,8 @@ public class PersonManagementFacade {
         recommendationService.setRecommendations(strategy);
     }
 
-    public String connectPeople(Person person1, Person person2) {
-        return connectionService.connectPeople(person1, person2);
+    public String connectPeople(Person person1, Person person2, RelationshipType type) {
+        return connectionService.connectPeople(person1, person2, type);
     }
 
     public List<Person> getAllPeople() {

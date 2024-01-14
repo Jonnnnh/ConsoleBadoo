@@ -10,7 +10,7 @@ public class InputNormalizer {
     private static final Map<String, String> locationSynonyms = new HashMap<>();
 
     static {
-        locationSynonyms.put("москва", "Москва");
+        locationSynonyms.put("москва", "Москва"); // TODO: сделать универсальный
         locationSynonyms.put("мск", "Москва");
         locationSynonyms.put("санкт-петербург", "Санкт-Петербург");
         locationSynonyms.put("спб", "Санкт-Петербург");

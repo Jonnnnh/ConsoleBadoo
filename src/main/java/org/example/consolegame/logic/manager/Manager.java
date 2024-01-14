@@ -119,15 +119,15 @@ public class Manager implements IPersonManager {
     }
 
     private int getIntFromUser(Scanner scanner, String prompt) {
-        System.out.print(prompt);
-        while (!scanner.hasNextInt()) {
-            System.out.println(ConsoleColors.RED + "Пожалуйста, введите число" + ConsoleColors.RESET);
+        while (true) {
             System.out.print(prompt);
-            scanner.next();
+            try {
+                return scanner.nextInt();
+            } catch (InputMismatchException e) {
+                System.out.println(ConsoleColors.RED + "Пожалуйста, введите число" + ConsoleColors.RESET);
+                scanner.next();
+            }
         }
-        int number = scanner.nextInt();
-        scanner.nextLine();
-        return number;
     }
 
     private Gender getGenderFromUser(Scanner scanner) {

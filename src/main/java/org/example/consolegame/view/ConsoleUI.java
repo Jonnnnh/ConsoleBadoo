@@ -4,6 +4,7 @@ import org.example.consolegame.client.Person;
 import org.example.consolegame.logic.manager.ConnectionManager;
 import org.example.consolegame.logic.manager.Manager;
 
+import java.util.InputMismatchException;
 import java.util.List;
 import java.util.Scanner;
 
@@ -23,8 +24,15 @@ public class ConsoleUI {
         Person me = manager.inputPersonData();
         while (true) {
             manager.printMenu();
-            command = scanner.nextInt();
-            processCommand(command, me);
+            try {
+                command = scanner.nextInt();
+                processCommand(command, me);
+            } catch (InputMismatchException e) {
+                System.out.println("Неверный ввод. Пожалуйста, введите число.");
+                scanner.next();
+            } catch (Exception e) {
+                System.out.println("Произошла ошибка: " + e.getMessage());
+            }
         }
     }
 
